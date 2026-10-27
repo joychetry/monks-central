@@ -114,7 +114,8 @@ In `ui/`:
   given back by the palette,
   200% zoom and browser text size. CI runs both.
 - Screenshots: `SHOTS=<folder> npx playwright test shots` writes every screen in both themes (and
-  compact and 200% zoom for Sites and Overview) to `docs/ux/phase-1-ux/<folder>/`.
+  compact for Sites, 200% zoom for Overview, Sites, Updates and Plugins) to `docs/ux/<folder>/`
+  (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`).
 
 A new screen adds itself to `e2e/screens.ts`, so it gets axe and screenshots for free.
 
