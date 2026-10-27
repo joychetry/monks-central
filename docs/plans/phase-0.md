@@ -135,22 +135,109 @@ Neutral styling only; the design pass is Phase 0.5.
 
 Tests: Vitest + Testing Library render the shell with a mocked `invoke`.
 
-## P0.10 Test sites script
-
-`scripts/test-sites.sh create|start|stop|status|delete` for `mc-a` (Classic
-Monks branch build + WooCommerce), `mc-b` (Classic Monks from wp.org,
-degraded mode), `mc-c` (no Classic Monks, application password). Writes the
-Studio hosts block entry itself with `sudo` (Studio's `pkexec` hangs with no
-polkit agent), then starts the site. Checks WordPress is 7.1 or newer. Never
-touches sites it did not create. App password saved to a 0600 file, never
-printed.
-
-## P0.11 CI
+## P0.10 CI
 
 GitHub Actions on push: `fmt`, `clippy -D warnings`, `cargo test` on Linux,
-macOS and Windows; UI typecheck, build and Vitest on Linux.
+macOS and Windows; UI typecheck, build and Vitest on Linux;
+shellcheck and the test-sites self-test (added with P0.11).
+
+## P0.11 Test sites script
+
+`scripts/test-sites.sh create|start|stop|status|delete` for `mc-a` (Classic
+Monks branch build + WooCommerce), `mc-b` (Classic Monks as released, from
+the `main` branch, degraded mode; it is not on wordpress.org yet), `mc-c` (no
+Classic Monks, application password). Writes the Studio hosts block entry
+itself with `sudo` (Studio's `pkexec` hangs with no polkit agent), then starts
+the site. Checks WordPress is 7.1 or newer and `WP_ENVIRONMENT_TYPE=local`.
+Never touches sites it did not create. App password saved to a 0600 file,
+never printed.
 
 ## P0.12 Phase 0 result
 
-Commit list, test counts, doctor output, deferred items, open questions
-(section below).
+Done 2026-10-27. Live transcript: `docs/acceptance/phase-0.txt`, screenshot
+`docs/acceptance/phase-0-app-dark.png`.
+
+### Commits
+
+- `3bc9fb7` docs: add licence, readme and phase 0 plan (P0.1)
+- `05273db` chore: add rust workspace with core and cli crates (P0.2)
+- `bffada1` feat(core): add sqlite store with versioned migrations (P0.3)
+- `f88dac1` feat(core): add secret vault with one keychain master key (P0.4)
+- `9fd1324` feat(core): add http client on the os trust store (P0.5)
+- `28c663d` feat(core): add data folder and single-core lock file (P0.6)
+- `f378b01` feat(core): add local socket ipc where every client is an agent (P0.7)
+- `daea6ca` feat(cli): add monks core, status and doctor (P0.8)
+- `4003836` feat(app): add tauri 2 app and react ui shell (P0.9)
+- `cff7ffe` ci: add fmt, clippy, tests and ui tests (P0.10)
+- `4f909a6` chore: add wordpress studio test-sites script (P0.11)
+- `ccb30b6` fix(ci): install only the linux packages tauri needs (P0.10)
+- docs: phase 0 result (P0.12, this section)
+
+### Tests
+
+- Rust: 22 (monks-core 13 unit + 6 socket integration, monks-cli 3), all
+  passing on Linux and macOS; 20 on Windows (two Unix permission tests don't
+  apply; the named-pipe tests run there). fmt and clippy `-D warnings` clean.
+  CI run 40535633616 green on all jobs.
+- UI: 3 Vitest tests; typecheck and build clean.
+- Scripts: shellcheck clean; `scripts/test-sites.test.sh` (hosts edits and
+  version check on a temp file).
+
+### Doctor (no TLS environment variables set)
+
+```
+$ monks doctor https://monks-central-test.local
+Monks Central doctor (0.0.1)
+  ok    Data folder   /home/joy/.local/share/com.classicmonks.monks-central
+  ok    Database      schema 1
+  ok    Keychain      master key read back; vault write, read back and delete ok
+  info  Core          not running (start it with `monks core` or open the app)
+  ok    TLS settings  no TLS environment variables; using the OS trust store
+  ok    HTTPS         https://monks-central-test.local answered 200
+All checks passed.
+```
+
+With a core running, the Core line reads `running (pid N), this client is an
+agent`, and a second `monks core` exits with "Monks Central is already
+running (pid N)." The app window (via `tauri dev`) shows role `operator`
+while `monks status` against the app's in-process core answers as an agent.
+
+Test sites made by the script: `mc-a` (8885, Classic Monks `feat/hq` +
+WooCommerce), `mc-b` (8886, Classic Monks `main` 2.5.0), `mc-c` (8887, no
+Classic Monks, app password verified against `/wp/v2/users/me`), all
+WordPress 7.1.3.
+
+### Deferred
+
+- Passphrase mode (Argon2id) when no keychain is available (Phase 1, before
+  the first site secret is stored on a headless machine).
+- CLI and `monks mcp` starting a headless core when none runs, and the core
+  exiting when idle. Today `monks core` is started by hand.
+- The app attaching to (or taking over from) a running headless core. Today
+  the window says "already running".
+- Network limits (per-site 2, global 8), retry rules, 429/403/WAF back-off:
+  Phase 1 with the connectors. TLS errors give a plain hint, no docs link yet.
+- Shipping `monks` next to the app (Tauri sidecar on Windows, "Install
+  command-line tool" on macOS/Linux): Phase 8.
+- CI compiles and tests the app crate on all three OSes but does not open a
+  window; the window was opened by hand on Linux only.
+- Playwright + axe UI checks and light-theme screenshots: with the Phase 0.5
+  design. Coverage gate: Phase 2.
+- `scripts/test-sites.sh delete` was not run live (it would delete the sites
+  just made).
+
+### Open questions
+
+1. Classic Monks is not on wordpress.org: no plugin with slug `classic-monks`
+   or author `classicmonks` (checked 2026-10-27). The plan's "Free (wp.org,
+   1.0.0)" and Basic mode's "install Classic Monks for me" depend on it. What
+   is the real slug, or is Free not published yet? `mc-b` uses `main` until
+   then.
+2. `mc-a` defaults to `feat/hq` (plan section 10). The plugin track now works
+   on `feat/monks-central`; should the default follow it?
+3. When the app starts while a headless core runs, should the app ask it to
+   exit and take over, or should the headless core hand its socket over?
+4. One keychain item (`com.classicmonks.monks-central` / `master-key`) is
+   shared by every data folder (`MONKS_HOME`). Fine, or one item per folder?
+5. CI runs macOS and Windows on every push. On a private repo those minutes
+   cost 10x and 2x. Keep, or move them to a nightly or manual job?
