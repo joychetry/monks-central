@@ -113,11 +113,15 @@ In `ui/`:
   no secrets). `e2e/a11y.spec.ts` runs axe (WCAG 2.0-2.2 A/AA and best practice; serious and
   critical fail) on every screen in `e2e/screens.ts`, in both themes and both row heights, and
   checks the skip link, focus rings, keyboard use of the Sites grid, focus kept in the sheet and
-  given back by the palette, the content editor from the keyboard,
-  200% zoom and browser text size. CI runs both.
+  given back by the palette, the content editor from the keyboard, answering a comment, turning a
+  Classic Monks feature on and undoing it, focus kept in the Add a user sheet,
+  200% zoom (now also Users, Add a user, Comments and Classic Monks) and browser text size.
+  CI is blocked by billing, so both run locally.
 - Screenshots: `SHOTS=<folder> npx playwright test shots` writes every screen in both themes (and
   compact for Sites, 200% zoom for Overview, Sites, Updates, Plugins, Content and the editor) to
-  `docs/ux/<folder>/` (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`, Phase 3: `phase-3`).
+  `docs/ux/<folder>/` (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`, Phase 3: `phase-3`, Phase 4: `phase-4`,
+  which keeps Users, Comments, Classic Monks, Sites with "Log in to the dashboard" and the
+  Security placeholder).
 
 A new screen adds itself to `e2e/screens.ts`, so it gets axe and screenshots for free.
 
