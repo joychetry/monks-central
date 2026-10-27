@@ -93,6 +93,8 @@ selected item adds a 2px ink bar so the choice isn't shown by a background shade
   filters, table, inspector. Dialogs (sheet, palette) keep focus inside and give it back on close.
 - Every control works from the keyboard; the Sites grid keeps J/K/X/slash/R/A and is a read-only
   `role="grid"` so the focused row is announced. Icon-only buttons have an `aria-label`.
+- A `<select>` wrapped in its `<label>` also gets `aria-label`: Chromium otherwise reads the
+  options into its name ("SiteMC ACorner Bakery...").
 - Progress and notices sit in live regions (`role="status"`) that exist before they change.
 - Hit targets at least 24px (checkboxes and tag remove buttons included); buttons and nav items
   are 28-32px.
@@ -111,11 +113,11 @@ In `ui/`:
   no secrets). `e2e/a11y.spec.ts` runs axe (WCAG 2.0-2.2 A/AA and best practice; serious and
   critical fail) on every screen in `e2e/screens.ts`, in both themes and both row heights, and
   checks the skip link, focus rings, keyboard use of the Sites grid, focus kept in the sheet and
-  given back by the palette,
+  given back by the palette, the content editor from the keyboard,
   200% zoom and browser text size. CI runs both.
 - Screenshots: `SHOTS=<folder> npx playwright test shots` writes every screen in both themes (and
-  compact for Sites, 200% zoom for Overview, Sites, Updates and Plugins) to `docs/ux/<folder>/`
-  (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`).
+  compact for Sites, 200% zoom for Overview, Sites, Updates, Plugins, Content and the editor) to
+  `docs/ux/<folder>/` (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`, Phase 3: `phase-3`).
 
 A new screen adds itself to `e2e/screens.ts`, so it gets axe and screenshots for free.
 
