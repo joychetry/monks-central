@@ -177,10 +177,90 @@ ticked.
 
 ## P1.14 Phase 1 result
 
-Commits, test counts, acceptance, deferred items, open questions.
+See "Phase 1 result" at the end.
 
 ## Out of scope for Phase 1
 
 Install Classic Monks for me (waits for the wp.org listing), import/export
 (Phase 7 in plan v2), passphrase mode, TanStack virtualised tables (Phase 2,
 with the 300-site matrix), one-click login (Phase 4).
+
+## Phase 1 result
+
+Done on 2026-10-27. Everything in P1.1 to P1.13 is built and pushed to main.
+
+### Commits
+
+```
+a4110d6 docs: add phase 1 plan
+d89a445 ci: run linux on every push, macos and windows nightly and on demand
+2ec44b8 feat(core): keep one keychain item per data folder
+ec4a72b chore(scripts): give test sites the full stack and switch mc-a to feat/monks-central
+99349fa feat(core): start a headless core on demand and let the app take over
+eb10d42 feat(core): store sites with groups, tags and notes
+9d94735 feat(core): limit requests per site and overall, retry only reads
+18d0ae4 feat(core): add the oauth client for classic monks
+dc7788f feat(core): connect sites by classic monks oauth or basic mode
+7b02532 fix(core): name basic mode sites from the rest index
+9a5f409 test(core): add the live acceptance driver for studio sites
+349d565 feat(app): add site commands for the window
+d1b4f93 feat(ui): add console design tokens and components
+ffd3205 feat(ui): add the shell, overview and sites screens
+7597664 feat(app): open a site in the default browser
+6b03dfd fix(ui): fit the sites table beside the inspector
+5cbf283 test(core): sign in again from the acceptance driver
+5d4cc09 docs(acceptance): add the phase 1 live run and screenshots
+37a9994 fix(scripts): tell shellcheck the eval body is php
+```
+
+### Tests
+
+- Rust: 51 (core 38 unit + 9 socket, CLI 3 unit + 1 autostart). The core
+  tests run against an in-process fake Classic Monks site (`testsite.rs`):
+  discovery, DCR, PKCE, consent redirect, refresh rotation and reuse,
+  revoke, MCP with both headers, get-hq-status, Basic mode, feed version.
+- UI: 16 (Vitest + Testing Library): rail, palette, theme, scope, the
+  sentence, needs attention, Sites keys, inspector edits, remove, add a site
+  in both modes, the WordPress 7.0 refusal.
+- `cargo fmt --check`, `cargo clippy --all-targets -D warnings`, `tsc`: clean.
+
+### Live acceptance
+
+Transcript: `docs/acceptance/phase-1.txt`. Screenshots, dark and light:
+`docs/acceptance/phase-1/`.
+
+| Item | Result | Evidence |
+| --- | --- | --- |
+| Connect mc-a by OAuth, operator ticked | Pass | operator true, 184 abilities; 1 grant on the site |
+| Connect mc-c in Basic mode | Pass | WordPress 7.1.3 from core/get-environment-info |
+| Connect monks-central-test | Pass | released 2.5.0: no operator box, shown as "update it" |
+| 20 parallel calls, one refresh | Pass | 20 ok, 1 refresh; the site issued exactly 1 new refresh token |
+| Corrupted secret shows Sign in again | Pass | call and check both say Sign in again; sign in again recovers |
+| Removing mc-a revokes on the site | Pass | studio wp: 1 grant before, 0 after |
+| WordPress 7.0 refused | Pass | "This site runs WordPress 7.0. Update WordPress to 7.1 or newer first." |
+| CLI starts a headless core; app takes over | Pass | `monks status` started pid 3747476; it exited when the app opened |
+| Test secrets deleted | Pass | keychain item and private data folder removed; 0 items left |
+
+### Deferred
+
+- Install Classic Monks for me, import/export, passphrase mode, TanStack
+  virtualised tables, one-click login (see "Out of scope").
+- Idle exit for a headless core the CLI started: it runs until stopped.
+- Basic mode removal can't delete the application password on the site;
+  the app says so.
+- A grant whose secret is unreadable can't be revoked by the app; it stays
+  on the site until it expires (30 days) or an admin revokes it.
+- Automated accessibility (axe) and Playwright checks of the real window.
+- macOS and Windows: CI builds and tests them nightly; no live run yet.
+
+### Open questions
+
+1. Released Classic Monks (2.5.0) exposed no abilities to the new grant
+   on monks-central-test, so the site shows as "update it". Is that the
+   intended default for a fresh OAuth grant, or should 2.5.0 grants get a
+   default toolset?
+2. Should Sign in again try to revoke the old grant by family when the
+   site offers a way (for example from the operator connection list)?
+3. Health checks run in parallel and Studio's PHP server is slow under
+   that load ("Slow: 3.3 s" on the first check). Keep 3 s as the slow
+   threshold for real hosts?
