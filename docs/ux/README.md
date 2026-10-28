@@ -138,7 +138,8 @@ an action keeps the rows on screen (no loading placeholder in their place). Bars
 are always there (disabled when nothing is ticked) or sit under the table, stuck to the bottom (Sites). An
 inline error that appears when you leave a box has its line reserved. Errors inline are only for a form's
 own fields, or in place of content that didn't load. `e2e/a11y.spec.ts` "results never move the rows"
-checks this.
+checks this, and `e2e/perf.spec.ts` keeps every list free of long freezes with 300 sites
+(`?fixture=fleet300`).
 
 Motion: `--dur` 140ms and `--ease` on colour, border and shadow; sheets slide in, popovers and the
 palette scale in, toasts rise. `prefers-reduced-motion` turns all of it off.
