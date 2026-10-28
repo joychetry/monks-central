@@ -110,7 +110,7 @@ No control draws in the OS look. Use the kit, never a native widget:
 |---|---|---|
 | Pick one of a list | `Select` (`components/controls.tsx`), takes `<option>`/`<optgroup>` children like `<select>` | select-only combobox + listbox; arrows, Home/End, Page keys, typeahead, Enter/Space/Tab choose, Esc closes |
 | Text with suggestions | `Combobox` (replaces `<input list>` + `<datalist>`) | combobox with list autocomplete |
-| Several from a long list | `MultiSelect` | combobox + multi-select listbox, chips with remove buttons |
+| Several from a long list | `MultiSelect` (Clients > Their sites) | combobox + multi-select listbox, chips with remove buttons |
 | Date, date and time, month | `DateInput type="date" / "datetime-local" / "month"`, native value formats | typed date ("1 Dec 2026") + calendar dialog (grid: arrows a day/week, Page keys a month); time box takes "9:30", arrows step it |
 | Number | `NumberInput` | spinbutton with minus and plus |
 | Filter or search | `SearchInput` | searchbox, Esc and a clear button empty it |
