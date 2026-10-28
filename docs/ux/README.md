@@ -102,6 +102,41 @@ selected item adds a 2px ink bar so the choice isn't shown by a background shade
   the layout becomes one column with the rail on top, nothing cut off; wide tables scroll inside
   their own box.
 
+## 6a. Controls (SaaS pass, 2026-10-28)
+
+No control draws in the OS look. Use the kit, never a native widget:
+
+| Need | Use | Pattern |
+|---|---|---|
+| Pick one of a list | `Select` (`components/controls.tsx`), takes `<option>`/`<optgroup>` children like `<select>` | select-only combobox + listbox; arrows, Home/End, Page keys, typeahead, Enter/Space/Tab choose, Esc closes |
+| Text with suggestions | `Combobox` (replaces `<input list>` + `<datalist>`) | combobox with list autocomplete |
+| Several from a long list | `MultiSelect` | combobox + multi-select listbox, chips with remove buttons |
+| Date, date and time, month | `DateInput type="date" / "datetime-local" / "month"`, native value formats | typed date ("1 Dec 2026") + calendar dialog (grid: arrows a day/week, Page keys a month); time box takes "9:30", arrows step it |
+| Number | `NumberInput` | spinbutton with minus and plus |
+| Filter or search | `SearchInput` | searchbox, Esc and a clear button empty it |
+| Tags | `TagInput` | chips + combobox; Enter or comma adds, Backspace removes |
+| Colour | `ColorInput` | swatch + hex box checked as you type + preset swatches dialog |
+| File | `FilePicker` | a button and a drop area; the native input is `display: none` |
+| On/off that acts at once | `<input type="checkbox" role="switch">` | drawn switch |
+| On/off in a form | `<input type="checkbox">`, choose-one `<input type="radio">` | drawn box and dot (`styles/controls.css`) |
+| A range | `Slider` (Settings > Text size) | drawn range with the value in words |
+| More actions | `Menu` | menu button; arrows, Enter, Esc gives focus back |
+| Parts of one screen | `Tabs` | tablist, one Tab stop, arrows choose |
+| Done, with a way back | `toast(text, { undo })` + `<Toaster />` | live region; Undo where the site can reverse it |
+| Full name of something cut short | `data-tip="..."` (never `title`) | custom tooltip on hover and keyboard focus, tied with `aria-describedby`, Esc hides |
+| Loading | `<Skeleton label="Reading ..." />` | `role="status"` with the words for screen readers |
+| Nothing here | `<Empty>` or `.empty` with a heading and the next step | |
+
+States: every control has hover, focus (2px ring), pressed, disabled (`not-allowed`, dashed or faded) and
+error (`aria-invalid`, red border and a sentence in `.err` tied with `aria-describedby`). Inline
+validation runs when you leave a box, never while you type the first characters.
+
+Motion: `--dur` 140ms and `--ease` on colour, border and shadow; sheets slide in, popovers and the
+palette scale in, toasts rise. `prefers-reduced-motion` turns all of it off.
+
+Layout: under 1200px the rail is 216px and the inspector 288px, bars wrap; under 900px the existing
+one-column layout takes over.
+
 ## 7. How it is checked
 
 In `ui/`:
@@ -123,6 +158,10 @@ In `ui/`:
   200% zoom (now also Users, Add a user, Comments, Classic Monks, the AI tabs, Security, Monitoring
   and job progress) and browser text size.
   CI is blocked by billing, so both run locally.
+- `e2e/native.spec.ts`: on every screen in `e2e/screens.ts` (and with its first listbox open), every
+  button, input, textarea, select, progress and meter has a computed `appearance` of `none`, and no
+  `select`, `datalist`, native date/time/month/colour/number input, visible file input or `title`
+  tooltip is on the page. A probe test proves the check catches a native control.
 - Screenshots: `SHOTS=<folder> npx playwright test shots` writes every screen in both themes (and
   compact for Sites, 200% zoom for Overview, Sites, Updates, Plugins, Content and the editor) to
   `docs/ux/<folder>/` (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`, Phase 3: `phase-3`, Phase 4: `phase-4`,
