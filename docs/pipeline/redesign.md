@@ -81,8 +81,8 @@ feced27 fix(ui): Overview sites table fits its card, e2e follows the new head
 | `cargo test --workspace` | 140 passed, 0 failed |
 | `tsc -b` | pass |
 | Vitest | 281 passed (17 files), contrast 142/142 pairs |
-| Playwright (axe in both themes and densities, keyboard, 200% zoom, text size, native controls, no-shift, 300 sites) | 445 passed, 1 flaky, 0 failed, 184 skipped |
-| `tauri build --no-bundle` | pass, `target/release/monks-central` |
+| Playwright (axe in both themes and densities, keyboard, 200% zoom, text size, native controls, no-shift, 300 sites) | 445 passed, 1 flaky, 0 failed, 184 skipped; after the fit pass 446 passed, 0 flaky, plus the 2 new checks |
+| `tauri build --no-bundle` | pass, `target/release/monks-central` (again after the fit pass, with `scripts/sidecar.sh --release` first) |
 
 The 184 skipped are the screenshot tests, which only run with `SHOTS` set. The one flaky test
 (axe: security, dark, compact) was a Chromium "Target crashed" under memory pressure and passed on
@@ -98,3 +98,30 @@ experiment spec was removed.
 - After: `docs/ux/redesign/after/` (184: every screen in both themes, compact Sites, 200% zoom, 960px)
 - Overview beside the design: `docs/ux/redesign/overview-side-by-side-light.png` and
   `docs/ux/redesign/overview-side-by-side-dark.png`
+
+## Fit and clipping pass (2026-10-28)
+
+Every shot in `after/` looked at in both themes, plus a script that measured overflow on every
+screen at 1440, 1200 and 960 wide. Fixed, one commit each:
+
+- **Sites table cut off beside the inspector.** It needed 933px and had 770 (1440) or 630 (1200),
+  so Tags and Last checked fell off the right edge. Tags now sit under the name, when it was last
+  checked under the status, PHP under WordPress in a Versions column; the Site column takes the
+  room left and cuts a long name, with the full name and address in its tooltip. Compact rows stay
+  36px. The narrow rail and inspector now apply up to 1300px (at 1200 a 1201px window had 100px
+  less room for tables than a 1200px one).
+- **Finished job sheet was empty.** The results list had class `progress`, which the progress bar
+  rule also matches (6px tall, overflow hidden), so Updates and AI progress showed no rows. Renamed
+  to `results`; the state badge fits "Rolled back" so every row lines up.
+- **Install a plugin.** The "Replace it where it's already installed" checkbox sat above its words,
+  and in the site list a long reason squeezed "Studio Blog" to one word per line. Both fixed.
+- **Reports.** The "A client's sites / Sites I pick" switch touched the Client label; it now has the
+  same 16px as between fields.
+
+New e2e checks: the Sites table fits at 1440, 1301 and 1200 (both densities), and a finished job
+lists every change. Re-taken: 44 shots (Sites, Add a site, job progress, Install, Reports, Publish
+on several sites).
+
+Left as is (scrolling inside their own card, never the page): Monitoring at 1200 wide (its
+table needs 1095px); at 960 wide the Sites table, Plugins with its inspector open, Store, Clients,
+Security, Users and AI Activity. Every one of them was so before this pass.
