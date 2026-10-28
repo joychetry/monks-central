@@ -122,14 +122,23 @@ No control draws in the OS look. Use the kit, never a native widget:
 | A range | `Slider` (Settings > Text size) | drawn range with the value in words |
 | More actions | `Menu` | menu button; arrows, Enter, Esc gives focus back |
 | Parts of one screen | `Tabs` | tablist, one Tab stop, arrows choose |
-| Done, with a way back | `toast(text, { undo })` + `<Toaster />` | live region; Undo where the site can reverse it |
-| Full name of something cut short | `data-tip="..."` (never `title`) | custom tooltip on hover and keyboard focus, tied with `aria-describedby`, Esc hides |
+| Done, with a way back | `toast(text, { undo })` + `<Toaster />` | live region; Undo where the site can reverse it; errors and Undo stay until closed, plain ones go after 5 s |
+| Full name of something cut short | `data-tip="..."` (never `title`) | custom tooltip on hover and keyboard focus, tied with `aria-describedby`, Esc hides. On text that can't take focus (a cut-off name in a cell), the tip is for the mouse; the full text stays in the page for screen readers and in the inspector or editor for the keyboard |
 | Loading | `<Skeleton label="Reading ..." />` | `role="status"` with the words for screen readers |
 | Nothing here | `<Empty>` or `.empty` with a heading and the next step | |
 
 States: every control has hover, focus (2px ring), pressed, disabled (`not-allowed`, dashed or faded) and
 error (`aria-invalid`, red border and a sentence in `.err` tied with `aria-describedby`). Inline
 validation runs when you leave a box, never while you type the first characters.
+
+Nothing moves under the pointer (ui-review, 2026-10-28): the result of an action, a check in progress or a
+failed action never appears as a line above a list, table or set of controls. It is a toast (bottom right,
+bottom left while a sheet is open), so a quick second click lands on the row it was aimed at. A refresh after
+an action keeps the rows on screen (no loading placeholder in their place). Bars that come with a selection
+are always there (disabled when nothing is ticked) or sit under the table, stuck to the bottom (Sites). An
+inline error that appears when you leave a box has its line reserved. Errors inline are only for a form's
+own fields, or in place of content that didn't load. `e2e/a11y.spec.ts` "results never move the rows"
+checks this.
 
 Motion: `--dur` 140ms and `--ease` on colour, border and shadow; sheets slide in, popovers and the
 palette scale in, toasts rise. `prefers-reduced-motion` turns all of it off.
