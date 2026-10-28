@@ -17,6 +17,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | Top bar | Attention link | Green bold on Overview, plain muted on other pages, no underline | Underlined green everywhere | `.link.go` / `.link.quiet` | done |
 | Top bar | Check all sites now | Primary ink pill with disc on Overview; secondary pill with refresh icon on pages whose head holds the main action | Primary everywhere | Primary on Overview, secondary elsewhere | done |
 | Page head | Actions | Each page's main actions on the right of the title (secondary, then primary with a disc) | Only Overview had one; others had actions in a bar inside the card | `<HeadActions>` portal into the page head; screens move their main actions there | done |
+| Sidebar | Scrolling | The board shows the whole rail; no scrollbar drawn | In a 900px-tall window the rail scrolled with a 12px grey scrollbar beside the nav (live app) | `.rail` keeps an 8px gutter (no shift) and its thumb shows only on hover or focus (`styles/controls.css`) | done |
 
 ## 01-overview
 
