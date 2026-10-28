@@ -117,15 +117,19 @@ In `ui/`:
   Classic Monks feature on and undoing it, focus kept in the Add a user sheet, confirming an AI
   agent's plan and turning on agent access from the keyboard, the palette putting focus on a
   waiting plan, focus kept in the progress sheet after a retry, long reasons in the activity log
-  wrapping so no column leaves the window,
-  200% zoom (now also Users, Add a user, Comments, Classic Monks and the AI tabs) and browser text size.
+  wrapping so no column leaves the window, fixing a vulnerable plugin from Security through the plan,
+  running PageSpeed from the keyboard with focus kept on its button, a rolled back update showing
+  its reason and not being offered again,
+  200% zoom (now also Users, Add a user, Comments, Classic Monks, the AI tabs, Security, Monitoring
+  and job progress) and browser text size.
   CI is blocked by billing, so both run locally.
 - Screenshots: `SHOTS=<folder> npx playwright test shots` writes every screen in both themes (and
   compact for Sites, 200% zoom for Overview, Sites, Updates, Plugins, Content and the editor) to
   `docs/ux/<folder>/` (Phase 1.5: `phase-1-ux/after`, Phase 2: `phase-2`, Phase 3: `phase-3`, Phase 4: `phase-4`,
   which keeps Users, Comments, Classic Monks, Sites with "Log in to the dashboard" and the
   Security placeholder; Phase 5: `phase-5`, which keeps the AI tabs: a plan to confirm, no plans,
-  a confirmed plan, agent access, activity and connect an AI app).
+  a confirmed plan, agent access, activity and connect an AI app; Phase 6: `phase-6`, which keeps
+  Security, Monitoring, both empty, and job progress with a rolled back update).
 
 A new screen adds itself to `e2e/screens.ts`, so it gets axe and screenshots for free.
 
