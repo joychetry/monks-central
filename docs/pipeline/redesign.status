@@ -1,0 +1,2 @@
+FAIL
+needs claude.ai login: the artifact link opens the claude.ai sign-in page in the browser, and the Claude Docs connector denies access (artifact not shared with this account)
