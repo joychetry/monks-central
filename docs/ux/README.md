@@ -30,7 +30,7 @@ A screen is done when it meets every rule below and `npm test` and `npm run e2e`
 ## 3. Colour and contrast (WCAG 2.2 AA, both themes)
 
 - Text 4.5:1 on every surface it sits on, including muted text (`--text-3`), placeholders,
-  the "Soon" nav labels and status words. Large text 3:1.
+  and status words. Large text 3:1.
 - Icons, control borders (`--line-ui`) and the focus ring (`--focus`) 3:1. Hairlines
   (`--line`, `--line-2`) are decoration only; never let one be the only sign of a control.
 - Status colours (`--ok`, `--warn`, `--danger`) reach 4.5:1 on content surfaces and on their own
@@ -129,7 +129,12 @@ In `ui/`:
   which keeps Users, Comments, Classic Monks, Sites with "Log in to the dashboard" and the
   Security placeholder; Phase 5: `phase-5`, which keeps the AI tabs: a plan to confirm, no plans,
   a confirmed plan, agent access, activity and connect an AI app; Phase 6: `phase-6`, which keeps
-  Security, Monitoring, both empty, and job progress with a rolled back update).
+  Security, Monitoring, both empty, and job progress with a rolled back update; Phase 7: `phase-7`,
+  which keeps content history, bulk, trash and publish on several sites, Clients, Install from a
+  zip and bundles, Search, Store, Classic Monks reports, Reports and Settings).
+
+The report preview is an iframe that runs no scripts, so axe skips inside it (`exclude`); the
+report's own HTML is escaped and tested in the core.
 
 A new screen adds itself to `e2e/screens.ts`, so it gets axe and screenshots for free.
 
