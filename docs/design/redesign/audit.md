@@ -34,6 +34,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 01 Overview | Latest changes: version words | "to 2.5.0" | The log keeps the job's words | Shows what the log says | kept: the activity log stores the change's title, not the versions |
 | 01 Overview | Versions card | not in the design | WordPress, PHP and connection spread | Kept under Latest changes, in the design's card look | kept: existing feature |
 | 01 Overview | Next steps card | not in the design | Shown for a new fleet of up to 2 sites until hidden | Kept | kept: existing feature (first-run help) |
+| 01 Overview | Latest changes: plugin tiles | Sentences name the plugin in bold | Names only | When the change names a plugin or theme the site runs, its 18px tile sits just before the name | done |
 
 ## 02-sites
 
@@ -74,7 +75,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 03 Updates | Site group rows | 44px row on the well: site tile, bold name, "N updates", the site's status pill when it can't be reached, "From the last read, ..." | Site name repeated in every row | Group row per site with `SiteTile`, name, count, a "Select every update on X" box; status pill (shape + word) and "From the last read, X ago" when the site's status isn't healthy | done |
 | 03 Updates | Site group rows | A site that couldn't be reached still lists its updates | Down, sign-in and no-tools sites can't run updates, so the app leaves them out | Those sites stay out of the table and are listed in "Not in this list"; the pill shows for sites that can update but aren't healthy (e.g. "Needs a look") | kept: the app can't run updates on a site it can't reach |
 | 03 Updates | Rows | 56px rows: 30px letter tile (core on ink, theme with palette icon), bold name, kind line | Plain text cells | `.item` with `.ptile` (core `.ptile.ink` "W", theme palette glyph, translations globe), name (cut with tooltip), kind line | done |
-| 03 Updates | Rows | Plugin tiles show the plugin's own icon where known (Classic Monks) | Letter only | Letter tile | kept: the inventory has no plugin icons |
+| 03 Updates | Rows | Plugin tiles show the plugin's own icon where known (Classic Monks) | Letter only | `ChangeTile`: the plugin's WordPress.org icon or the theme's screenshot (cropped square) in the 30px `.ptile`, through the core's cache (`wporg.rs`); monogram for plugins and themes not on WordPress.org; core keeps the ink "W", translations the globe | done |
 | 03 Updates | From → to | `.mc-ver--to`: old quiet, arrow icon, new bold green, mono | Two mono columns | `.vto` (with a screen-reader "to"); translations say "new files" | done |
 | 03 Updates | Good to know | Badges "Security fix" (danger), "1 step after updating" (warn); words "Minor release", "Active theme" | None | "Security fix" danger badge when the site's last security report has a vulnerability for that item fixed in the new version (tooltip: its title); "Major release" warning badge when the first version number changes; words "Active theme", "Not active", "Language files", "Minor release" | done |
 | 03 Updates | Good to know | "1 step after updating" from release notes | None | Not shown | kept: Monks Central doesn't read release notes or upgrade steps |
@@ -96,7 +97,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 04 Plugins | Table orientation | One row per plugin, one column per site | One row per site, one column per plugin | Transposed; arrow keys, Home/End and the single Tab stop move with it (unit test and a11y e2e updated, same behaviours) | done |
 | 04 Plugins | Column heads | Site names, mono uppercase on the well; first head "Plugin" | "Site", then plugin names clamped to 2 lines | Site names (clamped, full name in the tip), first head "Plugin" | done |
 | 04 Plugins | Row heads | Plugin icon tile 30px, bold name, slug line in subtle 12px, rows 64px | Site name in bold | `.ptile` letter tile, name, slug (`slugOf`), 64px rows; name column sticky when sites scroll sideways, wraps past 240px | done |
-| 04 Plugins | Row heads: icon | Classic Monks shows the plugin's own icon image | — | Letter tiles for every plugin | kept: the inventory has no plugin icons (the core reads none); the design's letter tiles are used for all |
+| 04 Plugins | Row heads: icon | Classic Monks shows the plugin's own icon image | Letter tiles for every plugin | `PkgTile`: the WordPress.org icon (svg, then 2x, then 1x) inside the 30px tile's border, 40px in the inspector head; monogram for plugins not in the directory (Classic Monks, Bricks, premium, zips) | done |
 | 04 Plugins | Cells | 128px boxes, two lines: mono version 12.5px and a state word 12px; update tinted with green bold word, active in the well, inactive outlined, not installed dashed with "—", vulnerable on the danger ground, open cell with a 2px green ring | Mono version on one line, struck through when inactive, a dot when missing, a yellow "Update" tag | `.cell` + tone (`up`, `on`, `idle`, `none`, `vuln`), words "Update to X", "Active", "Inactive", "Not installed", "Vulnerable · fix ready"; ring as a box-shadow so the focus outline still shows; 12.5px becomes `--fs-sm` 13px | done |
 | 04 Plugins | Cells: vulnerable | "Vulnerable · fix ready" from the security check | Not shown | Read from `api.security()` (version must match); "fix ready" when a fix exists and an update waits | done |
 | 04 Plugins | Cells: held back | "Held back" on MC B | — | No such state | kept: the core has no held-back (pinned) versions; the cell says "Update to X" or "Active" |
@@ -123,6 +124,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 05 Themes | Legend | (none on the board) | Sentence legend | The Plugins swatch legend, "Installed" for the outlined swatch | done |
 | 05 Themes | Right column | Card "Active theme on each site": site tile, site name, "Twenty Twenty-Six 1.3", "Current" pill or "Update ready" badge | — | `aside.insp.mx-insp` card when no cell is open: `SiteTile`, name, active theme and version, `st pill ok` "Current" (check shape + word) or `tag ok` "Update ready"; the cell inspector replaces it while a cell is open | done |
 | 05 Themes | Inspector | Same panel as Plugins | Name, Close, Use this theme / Delete | Same inspector as Plugins; the theme in use says why it can't be deleted in a callout | done |
+| 05 Themes | Theme tiles | Palette tile for directory themes, letter tile "B" for Bricks | Palette glyph for every theme | `PkgTile`: the theme's WordPress.org screenshot cropped square (it is 4:3), 30px in the row head, 40px in the inspector; monogram for themes not in the directory | done |
 
 ## 06-content
 
@@ -239,6 +241,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 12 Security | Affected versions | "2.3.1 and earlier" | Installed version | Shows Installed and Fixed in | kept: data, WPVulnerability gives the affected range as words in the title; the app shows what each site runs |
 | 12 Security | Side column | Sites with nothing known (tile, plugins and themes scanned, Clear pill) | A list in text | Card with favicons and Clear pills; Not checked card for sites not scanned | done |
 | 12 Security | Abandoned plugins | Not in the design | Table of abandoned plugins | Kept as a card under the findings | kept: existing feature (closed or two-year-old plugins); every control stays |
+| 12 Security | Plugin tiles | Plugin and type in mono beside the severity tag | Name only | An 18px plugin or theme tile before the name in each finding's meta line; a 24px tile in the Abandoned plugins rows. The shield tile stays (it carries the severity) | done |
 
 ## 13-clients
 
@@ -280,6 +283,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 15 Reports | Report preview | White page: MONTHLY REPORT · month, client, site names, accent rule, business name, three stat tiles, What we did this month, Search bars, footer line and Made with Monks Central | Nothing before making; iframe after | Drawn page from Settings (business name, footer, accent, white label) and the picked client and sites; after making, the real report in the sandboxed iframe in the same well | done |
 | 15 Reports | Preview numbers | 98.7% uptime, 11 updates, 1 security fix, Search Console bars | none | "What it covers" list until the report is made; the real numbers show in the made report | kept: data, the numbers are read from each site when the report is made (`report::make`); no stand-in numbers before that |
 | 15 Reports | Footnote | "Branding, the footer line and data sources live in Settings" with a link | none | Footnote with a link that opens Settings | done |
+| 15 Reports | Work done | not in the design | Work rows in words | HTML report and preview: a 16px picture before a row that names a plugin or theme the site runs (each picture once, as a class); the PDF keeps the words | done |
 
 ## 16-ai
 
@@ -291,6 +295,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 16 AI | Agent name and reason | "Claude", and the agent's own words for why | "AI agent" | Shows "AI agent" | kept: data, a plan (`Job`) records that an agent proposed it, not which app or why |
 | 16 AI | Side column | Agent access card with a switch per site (tile, On/Off), How agents work here card | Separate tab only | Access card beside the plans, How card under it; the Agent access tab shows the full list with what each setting means | done |
 | 16 AI | Activity | Feed: avatar, sentence with bold names, time | Table | Feed with the Overview's sentences, outcome pill where not done, Show older entries | done |
+| 16 AI | Plugin tiles | Plan boxes name each change | Names only | 18px tile before each change in the plan boxes; Activity rows that name a plugin or theme the site runs show its tile just before the name | done |
 
 ## 17-settings
 
@@ -315,6 +320,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | 18 Search | Products | Products in the results with Open in Store | none | Sites, plugins, themes and clients from what the app knows are in the list instead | kept: data, the core's content search asks for posts and pages, not WooCommerce products |
 | 18 Search | Ctrl K hint | Callout with the command icon | none | Callout with Kbd | done |
 | 18 Search | View label | Visible "View on MC A" | aria-label "View Our menu on MC A" (axe label-content-name-mismatch) | "View on MC A: Our menu" | done |
+| 18 Search | Plugin and theme results | Letter tile | Letter tile | `PkgTile`: the WordPress.org icon or screenshot, monogram otherwise | done |
 
 ## d01-empty-error
 
@@ -358,6 +364,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | D03 Updates flow | Foot | Ghost "Close without changes" / "Back" / "Close", primary pill with a disc (arrow on Review, check on Make these changes); "Try the 1 failed change again" is the primary with a refresh icon | Outlined secondary buttons, plain primary | Every sheet foot's non-primary, non-danger buttons are ghost; disc on Review (arrow) and Make these changes (check, not on the red risky confirm); retry is the primary with refresh, Close goes ghost | done |
 | D03 Updates flow | Foot | No "N selected" | "N selected" status at left of the Pick foot | Kept | kept: app's live count of what will run |
 | D03 Updates flow | Errors | n/a | `.alert.danger` | `.callout.danger` with alert glyph, still `role="alert"` | done |
+| D03 Updates flow | Plugin and theme tiles | Names only in Pick, Review and Run rows | Names only | Joy asked for icons here too: an 18px tile (Pick, Review) and a 24px tile (Run) before the name, same border and radius as the house chips; core "W", translations globe; none for content changes | done |
 
 ## d04-plugins-install
 
@@ -381,6 +388,7 @@ Every difference between Joy's design and the app, page by page (joined from `au
 | D04 Roll back | Version dates | A date on each row | — | No dates | kept: the site's version list (`list-plugin-versions`) has no release dates |
 | D04 Roll back | Automatic updates | "Turn automatic updates off so MC A stays on the version you pick", ticked | — | Shown when automatic updates are on for the plugin there and the connection can change them; adds "Turn automatic updates off" before the roll back in the plan | done |
 | D04 Roll back | Footer | "Close without changes", primary "Roll back WooCommerce" with a disc | — | Same, the disc holds the `history` glyph | done |
+| D04 Install | Result and bundle tiles | Letter tiles in the results; a package tile per bundle | Letter tiles | Results show the icon the search answer carries (the core caches it, no extra lookup); each bundle line has an 18px tile per plugin before the names | done |
 
 ## d05-content-flows
 

@@ -6,3 +6,4 @@
 | 12 Security | Affected versions | "2.3.1 and earlier" | Installed version | Shows Installed and Fixed in | kept: data, WPVulnerability gives the affected range as words in the title; the app shows what each site runs |
 | 12 Security | Side column | Sites with nothing known (tile, plugins and themes scanned, Clear pill) | A list in text | Card with favicons and Clear pills; Not checked card for sites not scanned | done |
 | 12 Security | Abandoned plugins | Not in the design | Table of abandoned plugins | Kept as a card under the findings | kept: existing feature (closed or two-year-old plugins); every control stays |
+| 12 Security | Plugin tiles | Plugin and type in mono beside the severity tag | Name only | An 18px plugin or theme tile before the name in each finding's meta line; a 24px tile in the Abandoned plugins rows. The shield tile stays (it carries the severity) | done |

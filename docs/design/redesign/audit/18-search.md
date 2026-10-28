@@ -7,3 +7,4 @@
 | 18 Search | Products | Products in the results with Open in Store | none | Sites, plugins, themes and clients from what the app knows are in the list instead | kept: data, the core's content search asks for posts and pages, not WooCommerce products |
 | 18 Search | Ctrl K hint | Callout with the command icon | none | Callout with Kbd | done |
 | 18 Search | View label | Visible "View on MC A" | aria-label "View Our menu on MC A" (axe label-content-name-mismatch) | "View on MC A: Our menu" | done |
+| 18 Search | Plugin and theme results | Letter tile | Letter tile | `PkgTile`: the WordPress.org icon or screenshot, monogram otherwise | done |

@@ -11,3 +11,4 @@
 | 01 Overview | Latest changes: version words | "to 2.5.0" | The log keeps the job's words | Shows what the log says | kept: the activity log stores the change's title, not the versions |
 | 01 Overview | Versions card | not in the design | WordPress, PHP and connection spread | Kept under Latest changes, in the design's card look | kept: existing feature |
 | 01 Overview | Next steps card | not in the design | Shown for a new fleet of up to 2 sites until hidden | Kept | kept: existing feature (first-run help) |
+| 01 Overview | Latest changes: plugin tiles | Sentences name the plugin in bold | Names only | When the change names a plugin or theme the site runs, its 18px tile sits just before the name | done |

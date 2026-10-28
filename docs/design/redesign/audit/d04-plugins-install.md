@@ -18,3 +18,4 @@
 | D04 Roll back | Version dates | A date on each row | — | No dates | kept: the site's version list (`list-plugin-versions`) has no release dates |
 | D04 Roll back | Automatic updates | "Turn automatic updates off so MC A stays on the version you pick", ticked | — | Shown when automatic updates are on for the plugin there and the connection can change them; adds "Turn automatic updates off" before the roll back in the plan | done |
 | D04 Roll back | Footer | "Close without changes", primary "Roll back WooCommerce" with a disc | — | Same, the disc holds the `history` glyph | done |
+| D04 Install | Result and bundle tiles | Letter tiles in the results; a package tile per bundle | Letter tiles | Results show the icon the search answer carries (the core caches it, no extra lookup); each bundle line has an 18px tile per plugin before the names | done |
