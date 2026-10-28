@@ -146,7 +146,7 @@ checks this, and `e2e/perf.spec.ts` keeps every list free of long freezes with 3
 Motion: `--dur` 150ms and `--ease` on colour, border and shadow; sheets slide in, popovers and the
 palette scale in, toasts rise. `prefers-reduced-motion` turns all of it off.
 
-Layout: under 1200px the sidebar is 216px and the inspector 288px, bars wrap; under 900px the existing
+Layout: up to 1300px wide the sidebar is 216px and the inspector 288px, bars wrap; under 900px the existing
 one-column layout takes over.
 
 ## Redesign: rule over design (2026-10-28)
