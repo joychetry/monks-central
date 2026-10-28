@@ -1,2 +1,2 @@
 FAIL
-needs claude.ai login: the artifact link opens the claude.ai sign-in page in the browser, and the Claude Docs connector denies access (artifact not shared with this account)
+needs claude.ai login: retry on 2026-10-28 got the same result. The Claude Docs connector read returns deny/access (not shared with this account), and the browser lands on "Sign in to view this page" (api/frame returns 401)
