@@ -205,7 +205,9 @@ In `ui/`:
   Security, Monitoring, both empty, and job progress with a rolled back update; Phase 7: `phase-7`,
   which keeps content history, bulk, trash and publish on several sites, Clients, Install from a
   zip and bundles, Search, Store, Classic Monks reports, Reports and Settings; the redesign:
-  `redesign/before` and `redesign/after`, with the Overview next to the design in `redesign/`).
+  `redesign/before` and `redesign/after`, with the Overview next to the design in `redesign/`; the media manager:
+  `media`, which keeps the library as a grid and a list, files waiting to upload, a replaced file with its
+  Undo, and the featured image picker).
 
 The report preview is an iframe that runs no scripts, so axe skips inside it (`exclude`); the
 report's own HTML is escaped and tested in the core.
