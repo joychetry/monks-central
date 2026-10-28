@@ -95,13 +95,22 @@ Steps:
       Leave `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` unset (the key has none).
 - [ ] Move `## [0.1.0] - Unreleased` in `CHANGELOG.md` to today's date.
 - [ ] Tag and push: `git tag -a v0.1.0 -m "Monks Central 0.1.0" && git push origin v0.1.0`.
-- [ ] Watch Actions > Release: four jobs (Linux, macOS Apple silicon, macOS
-      Intel, Windows). They make a **draft** release with the installers,
-      their `.sig` files and `latest.json`.
+- [ ] Watch Actions > Release: a job makes the **draft** release, four jobs
+      (Linux, macOS Apple silicon, macOS Intel, Windows) upload the installers
+      and their `.sig` files, and a last job writes `latest.json` from those
+      `.sig` files (`scripts/latest-json.sh`). Only that job writes
+      `latest.json`: in v0.1.0 every build job rewrote it at once and the
+      Windows job failed ("Not Found - update-a-release-asset").
 - [ ] Before publishing the draft: download each installer and try it on a real
       machine, following `docs/install.md` (macOS Open Anyway, Windows
       SmartScreen, Linux). The macOS and Windows builds have never been run.
-- [ ] Publish the draft (it is marked pre-release). Then open the Linux build
+- [ ] Publish the draft as a normal release, **not** a pre-release. The
+      updater reads `releases/latest/download/latest.json`, and GitHub's
+      "latest" skips pre-releases: with v0.1.0 marked pre-release that URL is
+      404, so 0.1.0 installs see no update until a normal release is
+      published. The workflow makes the draft a normal release; leave
+      "Set as a pre-release" unticked when you publish.
+- [ ] Then open the Linux build
       from step 5's draft on this computer, Settings > Check for a new version:
       it should say you have the newest version.
 
