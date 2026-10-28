@@ -2,30 +2,39 @@
 
 The standing bar for every screen, in every phase. It comes from the Phase 1.5 readability pass
 (Joy, 2026-10-27: "improve the user experience, the fonts and the spacing so it is more readable,
-accessible and understandable"). The design stays direction B "Console" (`docs/design/b-console`):
-monochrome, dense, keyboard-first, with the serif Overview sentence. These rules make it easy to read
-for a site owner who isn't technical; they don't change the direction.
+accessible and understandable"). The look is Joy's redesign (2026-10-28, `docs/design/redesign/`:
+spec, plan and the design's screens): a light sidebar and white cards on a soft green-grey ground,
+one green for the main action and the current page, Figtree with Outfit headings and mono uppercase
+labels. It replaces direction B "Console". These rules make it easy to read for a site owner who
+isn't technical; where the design and a rule disagree, the rule wins (see "Redesign: rule over
+design" below).
 
 A screen is done when it meets every rule below and `npm test` and `npm run e2e` pass in `ui/`.
 
 ## 1. Type
 
-- Six sizes, all tokens in `ui/src/styles/tokens.css`, in `rem` so the OS and browser text size
-  scale them: `--fs-xs` 12px (keys, captions), `--fs-sm` 13px (labels, column heads, versions),
-  `--fs` 15px (body), `--fs-lg` 18px (titles), `--fs-xl` 28px (counts, empty states),
-  `--fs-sentence` 44px (the Overview sentence). No other size, and nothing under 12px.
-- Body at 15px with a 1.5 line height (`--lh`).
+- Three families, bundled in `ui/src/fonts` with their OFL licences: Figtree (`--sans`, body and
+  controls), Outfit (`--display`, page titles, stat numbers, sheet titles) and JetBrains Mono (`--mono`).
+- Seven sizes, all tokens in `ui/src/styles/tokens.css`, in `rem` so the OS and browser text size
+  scale them: `--fs-xs` 12px (labels, meta, keys, counts), `--fs-sm` 13px (details, small buttons,
+  versions), `--fs` 14px (body, buttons, nav), `--fs-md` 15px (card titles, the page description),
+  `--fs-lg` 20px (sheet and section titles), `--fs-xl` 28px (page title, empty states),
+  `--fs-stat` 36px (stat numbers). No other size, and nothing under 12px.
+- Body at 14px with a 1.45 line height (`--lh`).
 - Tabular figures for counts and versions (`.num`, table cells, counts).
-- Mono (`--mono`) only for versions and code-like strings (addresses). Never for timestamps
-  ("2 min ago"), tags, labels or prose.
+- Mono (`--mono`) for versions, code-like strings (addresses), times in the Latest changes feed,
+  and the uppercase spaced labels (`.label`, column heads, nav groups, `--label-track`). Never for
+  prose or buttons.
 
 ## 2. Spacing and density
 
 - Every padding, margin and gap comes from the 4px scale: `--sp-1` 4 … `--sp-7` 48.
-- Rows are comfortable by default (`--row` 40px). Settings > Row height > Compact sets
-  `data-density="compact"` (32px rows, 16px gutters) and is remembered on this computer
+- Rows are comfortable by default (`--row` 48px). Settings > Row height > Compact sets
+  `data-density="compact"` (36px rows, 16px gutters) and is remembered on this computer
   (`mc-density` in local storage). Every table must work in both.
-- Sections breathe: 24px gutters (`--pad`), 48px above and 40px below the Overview sentence.
+- Cards (`--radius-lg` 14px, 20px padding, `--pad`) sit 16px apart on the ground; the page head
+  (title, one line of description, the page's main action) sits above them. Buttons are pills
+  (`--control` 36px, small 30px); text boxes are `--field` 40px (small 34px).
 
 ## 3. Colour and contrast (WCAG 2.2 AA, both themes)
 
@@ -35,8 +44,11 @@ A screen is done when it meets every rule below and `npm test` and `npm run e2e`
   (`--line`, `--line-2`) are decoration only; never let one be the only sign of a control.
 - Status colours (`--ok`, `--warn`, `--danger`) reach 4.5:1 on content surfaces and on their own
   tinted backgrounds. Version cells coloured amber or red (Updates, Plugins) use these tokens.
-- `ui/src/contrast.test.ts` checks every pair (108 of them). A new token or surface means a new
-  pair in that test.
+- The green: light uses `#01824C` (`--green`, `--focus`, `--accent`) and `#016B3F` for green words
+  (`--brand-text`, `--ok`); dark fills the main action with `#01824C` under white text and uses
+  `#3DBF82` for the focus ring, dots and on states. White on either green fill passes 4.5:1.
+- `ui/src/contrast.test.ts` checks every pair (142 of them) across `--bg`, `--panel`, `--raise`,
+  `--sel`, `--ground`, `--tint-2` and `--warn-paper`. A new token or surface means a new pair in that test.
 
 ### Status is never colour alone
 
@@ -45,28 +57,17 @@ warning sign = Needs a look / Sign in again / No tools yet, cross = Down, empty 
 "i" = a note (Slow). Later screens follow the same rule: a word next to every coloured cell
 ("Update", "Risk", "Off"), and symbols explained in words in the legend (for example
 "dot = not installed", "struck through = installed but inactive" in the Plugins matrix).
-A slow site (over 3 s) is a note on a healthy site, never a warning.
+A slow site (over 3 s) is a note on a healthy site, never a warning. The Overview stat bars
+(`.mix`) are pictures with a written label (`role="img"`) and a key with every count in words.
 
-## 4. Light theme: paper and ink
+## 4. Light theme: a light sidebar
 
-Light mode keeps a dark rail; the content area is warm off-white paper. Dark mode stays fully dark.
-Rail tokens (`--rail-*`) are separate from content tokens; `.rail` maps them onto the content names,
-so every component (buttons, inputs, keys, the logo) works on the rail unchanged. In dark mode the
-rail tokens point at the dark content tokens.
-
-Three rails were tried, all at AA (`phase-1-ux/sidebar-options/`):
-
-| Option | Rail | Paper | Verdict |
-|---|---|---|---|
-| A Ink | `#1c1b19` warm near-black | `#fbfaf7` | **Chosen** |
-| B Graphite | `#1e1f20` neutral | `#f8f8f7` | Reads cold next to warm paper; drifts toward grey SaaS |
-| C Umber | `#241d17` brown-black | `#faf6ef` cream | Too brown: the rail starts to look like a brand colour, and cream paper tints the monochrome |
-
-**Why Ink:** it still reads as black, so the app stays monochrome and colour stays for status only.
-Its slight warmth matches the off-white paper, so the rail and the page look like one sheet of ink
-on paper rather than two products. Rail text reaches 15:1, the muted rail text (`--rail-text-3`)
-5.7:1 at worst, the rail status colours 4.5:1 or more on the rail and its hover state, and the
-selected item adds a 2px ink bar so the choice isn't shown by a background shade alone.
+The redesign replaces the earlier rule (a dark ink rail in light mode, Phase 1.5). In light mode the
+sidebar is white (`--bg`) with a hairline edge, beside the `--ground` content area; in dark mode it
+is `#141414` beside the `#0b0b0b` ground. The sidebar uses the content tokens in both themes, so the
+`--rail-*` tokens and the rail mapping are gone. The current page is never shown by colour alone:
+a `--sel` background, bolder words (green in light), a green icon and `aria-current="page"`. Counts sit in small
+badges; the Overview badge for sites that need you is red with the number written out.
 
 ## 5. Clarity
 
@@ -89,18 +90,18 @@ selected item adds a 2px ink bar so the choice isn't shown by a background shade
 
 - A visible 2px focus ring on everything focusable (`:focus-visible`, `--focus`); inputs never set
   `outline: none`.
-- A skip link ("Skip to content") is the first Tab stop. Tab order follows the page: rail, top bar,
-  filters, table, inspector. Dialogs (sheet, palette) keep focus inside and give it back on close.
+- A skip link ("Skip to content") is the first Tab stop. Tab order follows the page: sidebar, top bar,
+  page head, filters, table, inspector. Dialogs (sheet, palette) keep focus inside and give it back on close.
 - Every control works from the keyboard; the Sites grid keeps J/K/X/slash/R/A and is a read-only
   `role="grid"` so the focused row is announced. Icon-only buttons have an `aria-label`.
 - A `<select>` wrapped in its `<label>` also gets `aria-label`: Chromium otherwise reads the
   options into its name ("SiteMC ACorner Bakery...").
 - Progress and notices sit in live regions (`role="status"`) that exist before they change.
 - Hit targets at least 24px (checkboxes and tag remove buttons included); buttons and nav items
-  are 28-32px.
+  are 30-36px.
 - `prefers-reduced-motion` stops all animation. Under 900px wide (a 1440px window at 200% zoom)
-  the layout becomes one column with the rail on top, nothing cut off; wide tables scroll inside
-  their own box.
+  the layout becomes one column with the sidebar on top, nothing cut off; wide tables scroll inside
+  their own box, and the Overview's Your sites table wraps instead.
 
 ## 6a. Controls (SaaS pass, 2026-10-28)
 
@@ -142,17 +143,39 @@ own fields, or in place of content that didn't load. `e2e/a11y.spec.ts` "results
 checks this, and `e2e/perf.spec.ts` keeps every list free of long freezes with 300 sites
 (`?fixture=fleet300`).
 
-Motion: `--dur` 140ms and `--ease` on colour, border and shadow; sheets slide in, popovers and the
+Motion: `--dur` 150ms and `--ease` on colour, border and shadow; sheets slide in, popovers and the
 palette scale in, toasts rise. `prefers-reduced-motion` turns all of it off.
 
-Layout: under 1200px the rail is 216px and the inspector 288px, bars wrap; under 900px the existing
+Layout: under 1200px the sidebar is 216px and the inspector 288px, bars wrap; under 900px the existing
 one-column layout takes over.
+
+## Redesign: rule over design (2026-10-28)
+
+Where Joy's design and a rule above disagree, the rule stays and the app gets as close as it can:
+
+- **11px labels and meta** in the design are 12px (`--fs-xs`): nothing under 12px.
+- **Dark muted text** `#929292` is `#999999`, so it reaches 4.5:1 on the lightest dark surface
+  it sits on (`--tint-2` `#2c2c2c`). Light muted text `#5A665F` is `#56625B` for 4.5:1 on the
+  ground and hover rows. **Dark control borders** `#666666` are `#767676` for 3:1.
+- **Main action hover** goes darker (`--green-hover` `#016B3F`), not the design's lighter
+  `#02995A`, which leaves white text under 4.5:1.
+- **The bulk bar on Sites** stays under the table, stuck to the bottom, instead of floating over
+  rows: nothing moves under the pointer.
+- **The narrow layout** keeps the 900px breakpoint (a 1440px window at 200% zoom), not the design's
+  760px.
+- **Checkboxes, radios, switches and the slider** stay drawn (`styles/controls.css`) in the design's
+  green, not the browser's `accent-color` controls: no native controls.
+- **Status pills** keep their shape (tick, warning sign, cross, ring) next to the word; the dark
+  design shows a coloured dot only.
+- **The design's logo image** isn't in the bundle; the app keeps its own Classic Monks mark.
+- **Screens the design doesn't show** (Sites, Updates, Plugins, Content, AI and the rest) take the
+  same system: cards, mono labels, pill buttons, the green for the current choice.
 
 ## 7. How it is checked
 
 In `ui/`:
 
-- `npm test`: Vitest, including `contrast.test.ts` (108 token pairs).
+- `npm test`: Vitest, including `contrast.test.ts` (142 token pairs).
   `CONTRAST_REPORT=../docs/ux/phase-1-ux/contrast.md npx vitest run src/contrast.test.ts`
   writes the table.
 - `npm run e2e`: Playwright against a build that swaps the core for `e2e/mock-core.ts` (fake sites,
@@ -181,7 +204,8 @@ In `ui/`:
   a confirmed plan, agent access, activity and connect an AI app; Phase 6: `phase-6`, which keeps
   Security, Monitoring, both empty, and job progress with a rolled back update; Phase 7: `phase-7`,
   which keeps content history, bulk, trash and publish on several sites, Clients, Install from a
-  zip and bundles, Search, Store, Classic Monks reports, Reports and Settings).
+  zip and bundles, Search, Store, Classic Monks reports, Reports and Settings; the redesign:
+  `redesign/before` and `redesign/after`, with the Overview next to the design in `redesign/`).
 
 The report preview is an iframe that runs no scripts, so axe skips inside it (`exclude`); the
 report's own HTML is escaped and tested in the core.
