@@ -93,7 +93,9 @@ Steps:
       `TAURI_SIGNING_PRIVATE_KEY` = the contents of the key file
       (`cat /home/joy/.hermes/secrets/monks-central-updater.key | wl-copy`).
       Leave `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` unset (the key has none).
-- [ ] Move `## [0.1.0] - Unreleased` in `CHANGELOG.md` to today's date.
+- [ ] Move `## [0.1.0] - Unreleased` in `CHANGELOG.md` to today's date. That
+      section becomes `latest.json` "notes", which the app shows under What's
+      new (`scripts/changelog-notes.sh`); without it the latest.json job fails.
 - [ ] Tag and push: `git tag -a v0.1.0 -m "Monks Central 0.1.0" && git push origin v0.1.0`.
 - [ ] Watch Actions > Release: a job makes the **draft** release, four jobs
       (Linux, macOS Apple silicon, macOS Intel, Windows) upload the installers
